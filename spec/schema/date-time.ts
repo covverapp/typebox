@@ -22,9 +22,9 @@ describe("DateTime", () => {
     const T = Type.DateTime();
     fail(T, { a: 1, b: 2 });
   });
-  it("Should not validate null", () => {
+  it("Should validate null", () => {
     const T = Type.DateTime();
-    fail(T, null);
+    ok(T, null);
   });
   it("Should not validate undefined", () => {
     const T = Type.DateTime();
@@ -34,5 +34,10 @@ describe("DateTime", () => {
   it("Should validate string format as date time", () => {
     const T = Type.DateTime();
     ok(T, "2021-06-11T20:30:00-04:00");
+  });
+
+  it("Should not validate empty string", () => {
+    const T = Type.DateTime();
+    fail(T, "");
   });
 });

@@ -198,7 +198,7 @@ export type TString = {
 } & StringOptions<string>;
 export type TDateTime = {
   kind: typeof DateTimeKind;
-  type: "string";
+  type: ["string", "null"];
 } & StringOptions<"date-time">;
 export type TNumber = {
   kind: typeof NumberKind;
@@ -582,7 +582,7 @@ export class TypeBuilder {
     return {
       ...options,
       kind: DateTimeKind,
-      type: "string",
+      type: ["string", "null"],
       format: "date-time",
     };
   }
