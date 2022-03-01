@@ -1,7 +1,4 @@
-import { Type, Static } from "@sinclair/typebox";
+import * as Spec from './spec'
+import { Type } from './typebox'
 
-// --------------------------------------------
-
-const T0 = Type.DateTime();
-const F0 = (arg: Static<typeof T0>) => {};
-F0(new Date());
+Spec.expectType<Date>(Spec.infer(Type.DateTime()))
