@@ -11,7 +11,7 @@
   "author": "sinclairzx81",
   "license": "MIT",
   "main": "./target/build/typebox.js",
-  "types": "./target/build/typebox.d.ts",
+  "types": "./typebox.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/sinclairzx81/typebox"

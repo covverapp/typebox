@@ -10,7 +10,7 @@
   ],
   "author": "sinclairzx81",
   "license": "MIT",
-  "main": "./typebox.js",
+  "main": "./target/build/typebox.js",
   "types": "./typebox.d.ts",
   "repository": {
     "type": "git",
