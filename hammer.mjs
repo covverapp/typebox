@@ -36,14 +36,14 @@ export async function example(target = 'target/example') {
 // Build
 // -------------------------------------------------------------------------------
 
-export async function build(target = 'target/build') {
+export async function build(target = '.') {
     await spec()
-    await folder(target).delete()
+    // await folder(target).delete()
     await shell(`tsc -p ./src/tsconfig.json --outDir ${target}`)
     await folder(target).add('package.json')
     await folder(target).add('readme.md')
     await folder(target).add('license')
-    await shell(`cd ${target} && npm pack`)
+    // await shell(`cd ${target} && npm pack`)
 
     // $ npm publish sinclair-typebox-0.x.x.tgz --access=public
     // $ git tag <version>
