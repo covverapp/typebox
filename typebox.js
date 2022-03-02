@@ -76,7 +76,7 @@ function isArray(object) {
 }
 function clone(object) {
     if (isObject(object))
-        return Object.keys(object).reduce((acc, key) => ({ ...acc, [key]: clone(object[key]) }), {});
+        return Object.keys(object).reduce((acc, key) => (Object.assign(Object.assign({}, acc), { [key]: clone(object[key]) })), {});
     if (isArray(object))
         return object.map((item) => clone(item));
     return object;
@@ -85,18 +85,20 @@ function clone(object) {
 // TypeBuilder
 // --------------------------------------------------------------------------
 class TypeBuilder {
-    schemas = new Map();
+    constructor() {
+        this.schemas = new Map();
+    }
     /** `Standard` Modifies an object property to be both readonly and optional */
     ReadonlyOptional(item) {
-        return { ...item, modifier: exports.ReadonlyOptionalModifier };
+        return Object.assign(Object.assign({}, item), { modifier: exports.ReadonlyOptionalModifier });
     }
     /** `Standard` Modifies an object property to be readonly */
     Readonly(item) {
-        return { ...item, modifier: exports.ReadonlyModifier };
+        return Object.assign(Object.assign({}, item), { modifier: exports.ReadonlyModifier });
     }
     /** `Standard` Modifies an object property to be optional */
     Optional(item) {
-        return { ...item, modifier: exports.OptionalModifier };
+        return Object.assign(Object.assign({}, item), { modifier: exports.OptionalModifier });
     }
     /** `Standard` Creates a type type */
     Tuple(items, options = {}) {
@@ -104,8 +106,7 @@ class TypeBuilder {
         const minItems = items.length;
         const maxItems = items.length;
         const schema = ((items.length > 0)
-            ? { ...options, kind: exports.TupleKind, type: 'array', items, additionalItems, minItems, maxItems }
-            : { ...options, kind: exports.TupleKind, type: 'array', minItems, maxItems });
+            ? Object.assign(Object.assign({}, options), { kind: exports.TupleKind, type: 'array', items, additionalItems, minItems, maxItems }) : Object.assign(Object.assign({}, options), { kind: exports.TupleKind, type: 'array', minItems, maxItems }));
         return this.Store(schema);
     }
     /** `Standard` Creates an object type with the given properties */
@@ -120,68 +121,67 @@ class TypeBuilder {
         const required_names = property_names.filter(name => !optional.includes(name));
         const required = (required_names.length > 0) ? required_names : undefined;
         return this.Store(((required)
-            ? { ...options, kind: exports.ObjectKind, type: 'object', properties, required }
-            : { ...options, kind: exports.ObjectKind, type: 'object', properties }));
+            ? Object.assign(Object.assign({}, options), { kind: exports.ObjectKind, type: 'object', properties, required }) : Object.assign(Object.assign({}, options), { kind: exports.ObjectKind, type: 'object', properties })));
     }
     /** `Standard` Creates an intersect type. */
     Intersect(items, options = {}) {
-        return this.Store({ ...options, kind: exports.IntersectKind, type: 'object', allOf: items });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.IntersectKind, type: 'object', allOf: items }));
     }
     /** `Standard` Creates a union type */
     Union(items, options = {}) {
-        return this.Store({ ...options, kind: exports.UnionKind, anyOf: items });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.UnionKind, anyOf: items }));
     }
     /** `Standard` Creates an array type */
     Array(items, options = {}) {
-        return this.Store({ ...options, kind: exports.ArrayKind, type: 'array', items });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.ArrayKind, type: 'array', items }));
     }
     /** `Standard` Creates an enum type from a TypeScript enum */
     Enum(item, options = {}) {
         const values = Object.keys(item).filter(key => isNaN(key)).map(key => item[key]);
         const anyOf = values.map(value => typeof value === 'string' ? { type: 'string', const: value } : { type: 'number', const: value });
-        return this.Store({ ...options, kind: exports.EnumKind, anyOf });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.EnumKind, anyOf }));
     }
     /** `Standard` Creates a literal type. Supports string, number and boolean values only */
     Literal(value, options = {}) {
-        return this.Store({ ...options, kind: exports.LiteralKind, const: value, type: typeof value });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.LiteralKind, const: value, type: typeof value }));
     }
     /** `Standard` Creates a string type */
     String(options = {}) {
-        return this.Store({ ...options, kind: exports.StringKind, type: 'string' });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.StringKind, type: 'string' }));
     }
     /* Covver code */
     /** `Standard` Creates a `date-time` schema. */
     DateTime(options = {}) {
-        return this.Store({ ...options, kind: exports.DateTimeKind, type: ["string", "null"], format: "date-time" });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.DateTimeKind, type: ["string", "null"], format: "date-time" }));
     }
     /* end Covver code */
     /** `Standard` Creates a string type from a regular expression */
     RegEx(regex, options = {}) {
-        return this.String({ ...options, pattern: regex.source });
+        return this.String(Object.assign(Object.assign({}, options), { pattern: regex.source }));
     }
     /** `Standard` Creates a number type */
     Number(options = {}) {
-        return this.Store({ ...options, kind: exports.NumberKind, type: 'number' });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.NumberKind, type: 'number' }));
     }
     /** `Standard` Creates an integer type */
     Integer(options = {}) {
-        return this.Store({ ...options, kind: exports.IntegerKind, type: 'integer' });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.IntegerKind, type: 'integer' }));
     }
     /** `Standard` Creates a boolean type */
     Boolean(options = {}) {
-        return this.Store({ ...options, kind: exports.BooleanKind, type: 'boolean' });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.BooleanKind, type: 'boolean' }));
     }
     /** `Standard` Creates a null type */
     Null(options = {}) {
-        return this.Store({ ...options, kind: exports.NullKind, type: 'null' });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.NullKind, type: 'null' }));
     }
     /** `Standard` Creates an unknown type */
     Unknown(options = {}) {
-        return this.Store({ ...options, kind: exports.UnknownKind });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.UnknownKind }));
     }
     /** `Standard` Creates an any type */
     Any(options = {}) {
-        return this.Store({ ...options, kind: exports.AnyKind });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.AnyKind }));
     }
     /** `Standard` Creates a record type */
     Record(key, value, options = {}) {
@@ -194,18 +194,18 @@ class TypeBuilder {
                 default: throw Error('Invalid Record Key');
             }
         })();
-        return this.Store({ ...options, kind: exports.RecordKind, type: 'object', patternProperties: { [pattern]: value } });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.RecordKind, type: 'object', patternProperties: { [pattern]: value } }));
     }
     /** `Standard` Creates a keyof type from the given object */
     KeyOf(object, options = {}) {
         const source = this.Deref(object);
         const keys = Object.keys(source.properties);
-        return this.Store({ ...options, kind: exports.KeyOfKind, type: 'string', enum: keys });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.KeyOfKind, type: 'string', enum: keys }));
     }
     /** `Standard` Makes all properties in the given object type required */
     Required(object, options = {}) {
         const source = this.Deref(object);
-        const schema = { ...clone(source), ...options };
+        const schema = Object.assign(Object.assign({}, clone(source)), options);
         schema.required = Object.keys(schema.properties);
         for (const key of Object.keys(schema.properties)) {
             const property = schema.properties[key];
@@ -229,7 +229,7 @@ class TypeBuilder {
     /** `Standard` Makes all properties in the given object type optional */
     Partial(object, options = {}) {
         const source = this.Deref(object);
-        const schema = { ...clone(source), ...options };
+        const schema = Object.assign(Object.assign({}, clone(source)), options);
         delete schema.required;
         for (const key of Object.keys(schema.properties)) {
             const property = schema.properties[key];
@@ -253,7 +253,7 @@ class TypeBuilder {
     /** `Standard` Picks property keys from the given object type */
     Pick(object, keys, options = {}) {
         const source = this.Deref(object);
-        const schema = { ...clone(source), ...options };
+        const schema = Object.assign(Object.assign({}, clone(source)), options);
         schema.required = schema.required ? schema.required.filter((key) => keys.includes(key)) : undefined;
         for (const key of Object.keys(schema.properties)) {
             if (!keys.includes(key))
@@ -264,7 +264,7 @@ class TypeBuilder {
     /** `Standard` Omits property keys from the given object type */
     Omit(object, keys, options = {}) {
         const source = this.Deref(object);
-        const schema = { ...clone(source), ...options };
+        const schema = Object.assign(Object.assign({}, clone(source)), options);
         schema.required = schema.required ? schema.required.filter((key) => !keys.includes(key)) : undefined;
         for (const key of Object.keys(schema.properties)) {
             if (keys.includes(key))
@@ -274,31 +274,31 @@ class TypeBuilder {
     }
     /** `Standard` Omits the `kind` and `modifier` properties from the underlying schema */
     Strict(schema, options = {}) {
-        return JSON.parse(JSON.stringify({ ...options, ...schema }));
+        return JSON.parse(JSON.stringify(Object.assign(Object.assign({}, options), schema)));
     }
     /** `Extended` Creates a constructor type */
     Constructor(args, returns, options = {}) {
-        return this.Store({ ...options, kind: exports.ConstructorKind, type: 'constructor', arguments: args, returns });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.ConstructorKind, type: 'constructor', arguments: args, returns }));
     }
     /** `Extended` Creates a function type */
     Function(args, returns, options = {}) {
-        return this.Store({ ...options, kind: exports.FunctionKind, type: 'function', arguments: args, returns });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.FunctionKind, type: 'function', arguments: args, returns }));
     }
     /** `Extended` Creates a promise type */
     Promise(item, options = {}) {
-        return this.Store({ ...options, type: 'promise', kind: exports.PromiseKind, item });
+        return this.Store(Object.assign(Object.assign({}, options), { type: 'promise', kind: exports.PromiseKind, item }));
     }
     /** `Extended` Creates a undefined type */
     Undefined(options = {}) {
-        return this.Store({ ...options, type: 'undefined', kind: exports.UndefinedKind });
+        return this.Store(Object.assign(Object.assign({}, options), { type: 'undefined', kind: exports.UndefinedKind }));
     }
     /** `Extended` Creates a void type */
     Void(options = {}) {
-        return this.Store({ ...options, type: 'void', kind: exports.VoidKind });
+        return this.Store(Object.assign(Object.assign({}, options), { type: 'void', kind: exports.VoidKind }));
     }
     /** `Standard` Creates a namespace for a set of related types */
     Namespace($defs, options = {}) {
-        return this.Store({ ...options, kind: exports.NamespaceKind, $defs });
+        return this.Store(Object.assign(Object.assign({}, options), { kind: exports.NamespaceKind, $defs }));
     }
     Ref(...args) {
         if (args.length === 2) {
@@ -326,7 +326,7 @@ class TypeBuilder {
     Rec(callback, options = {}) {
         const $id = options.$id || '';
         const self = callback({ $ref: `${$id}#/$defs/self` });
-        return this.Store({ ...options, $ref: `${$id}#/$defs/self`, $defs: { self } });
+        return this.Store(Object.assign(Object.assign({}, options), { $ref: `${$id}#/$defs/self`, $defs: { self } }));
     }
     /** Conditionally stores and schema if it contains an $id and returns  */
     Store(schema) {
