@@ -29,6 +29,7 @@ export declare const NullKind: unique symbol;
 export declare const UnknownKind: unique symbol;
 export declare const AnyKind: unique symbol;
 export declare const RefKind: unique symbol;
+export declare const DateTimeKind: unique symbol;
 export interface CustomOptions {
     $id?: string;
     title?: string;
@@ -153,6 +154,11 @@ export interface TString extends TSchema, StringOptions<string> {
     $static: string;
     kind: typeof StringKind;
     type: 'string';
+}
+export interface TDateTime extends TSchema, StringOptions<"date-time"> {
+    $static: Date;
+    kind: typeof DateTimeKind;
+    type: ["string", "null"];
 }
 export interface TNumber extends TSchema, NumberOptions {
     $static: number;
@@ -296,6 +302,8 @@ export declare class TypeBuilder {
     Literal<T extends TValue>(value: T, options?: CustomOptions): TLiteral<T>;
     /** `Standard` Creates a string type */
     String<TCustomFormatOption extends string>(options?: StringOptions<StringFormatOption | TCustomFormatOption>): TString;
+    /** `Standard` Creates a `date-time` schema. */
+    DateTime(options?: StringOptions<"date-time">): TDateTime;
     /** `Standard` Creates a string type from a regular expression */
     RegEx(regex: RegExp, options?: CustomOptions): TString;
     /** `Standard` Creates a number type */

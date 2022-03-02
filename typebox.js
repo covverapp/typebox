@@ -27,7 +27,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Type = exports.TypeBuilder = exports.VoidKind = exports.UndefinedKind = exports.PromiseKind = exports.FunctionKind = exports.ConstructorKind = exports.RefKind = exports.AnyKind = exports.UnknownKind = exports.NullKind = exports.BooleanKind = exports.IntegerKind = exports.NumberKind = exports.StringKind = exports.LiteralKind = exports.EnumKind = exports.ArrayKind = exports.RecordKind = exports.ObjectKind = exports.TupleKind = exports.UnionKind = exports.IntersectKind = exports.KeyOfKind = exports.NamespaceKind = exports.ReadonlyModifier = exports.OptionalModifier = exports.ReadonlyOptionalModifier = void 0;
+exports.Type = exports.TypeBuilder = exports.VoidKind = exports.UndefinedKind = exports.PromiseKind = exports.FunctionKind = exports.ConstructorKind = exports.DateTimeKind = exports.RefKind = exports.AnyKind = exports.UnknownKind = exports.NullKind = exports.BooleanKind = exports.IntegerKind = exports.NumberKind = exports.StringKind = exports.LiteralKind = exports.EnumKind = exports.ArrayKind = exports.RecordKind = exports.ObjectKind = exports.TupleKind = exports.UnionKind = exports.IntersectKind = exports.KeyOfKind = exports.NamespaceKind = exports.ReadonlyModifier = exports.OptionalModifier = exports.ReadonlyOptionalModifier = void 0;
 // --------------------------------------------------------------------------
 // Modifiers
 // --------------------------------------------------------------------------
@@ -55,6 +55,8 @@ exports.NullKind = Symbol('NullKind');
 exports.UnknownKind = Symbol('UnknownKind');
 exports.AnyKind = Symbol('AnyKind');
 exports.RefKind = Symbol('RefKind');
+/* Covver code */
+exports.DateTimeKind = Symbol("DateTimeKind");
 // --------------------------------------------------------------------------
 // Extended Schema Types
 // --------------------------------------------------------------------------
@@ -147,6 +149,12 @@ class TypeBuilder {
     String(options = {}) {
         return this.Store({ ...options, kind: exports.StringKind, type: 'string' });
     }
+    /* Covver code */
+    /** `Standard` Creates a `date-time` schema. */
+    DateTime(options = {}) {
+        return this.Store({ ...options, kind: exports.DateTimeKind, type: ["string", "null"], format: "date-time" });
+    }
+    /* end Covver code */
     /** `Standard` Creates a string type from a regular expression */
     RegEx(regex, options = {}) {
         return this.String({ ...options, pattern: regex.source });

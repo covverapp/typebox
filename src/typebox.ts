@@ -62,6 +62,13 @@ export const UnknownKind   = Symbol('UnknownKind')
 export const AnyKind       = Symbol('AnyKind')
 export const RefKind       = Symbol('RefKind')
 
+
+/* Covver code */
+export const DateTimeKind = Symbol("DateTimeKind");
+/* End Covver code */
+
+
+
 // --------------------------------------------------------------------------
 // Options
 // --------------------------------------------------------------------------
@@ -149,6 +156,11 @@ export interface TLiteral   <T extends TValue>                        extends TS
 export interface TEnum      <T extends TEnumKey[]>                    extends TSchema, CustomOptions         { $static: StaticEnum<T>,      kind: typeof EnumKind,      anyOf: T }
 export interface TRef       <T extends TSchema>                       extends TSchema, CustomOptions         { $static: Static<T>,          kind: typeof RefKind,       $ref: string  }
 export interface TString                                              extends TSchema, StringOptions<string> { $static: string,             kind: typeof StringKind,    type: 'string' }
+
+/* Covver code */
+export interface TDateTime                                            extends TSchema, StringOptions<"date-time"> { $static: Date,        kind: typeof DateTimeKind,    type: ["string", "null"] }
+/* Covver end code */
+
 export interface TNumber                                              extends TSchema, NumberOptions         { $static: number,             kind: typeof NumberKind,    type: 'number' }
 export interface TInteger                                             extends TSchema, NumberOptions         { $static: number,             kind: typeof IntegerKind,   type: 'integer' } 
 export interface TBoolean                                             extends TSchema, CustomOptions         { $static: boolean,            kind: typeof BooleanKind,   type: 'boolean' } 
@@ -329,6 +341,13 @@ export class TypeBuilder {
     public String<TCustomFormatOption extends string>(options: StringOptions<StringFormatOption | TCustomFormatOption> = {}): TString {
         return this.Store({ ...options, kind: StringKind, type: 'string' })
     }
+
+    /* Covver code */
+    /** `Standard` Creates a `date-time` schema. */
+    public DateTime(options: StringOptions<"date-time"> = {}): TDateTime {
+        return this.Store({ ...options, kind: DateTimeKind, type: ["string", "null"], format: "date-time" })
+    }
+    /* end Covver code */
 
     /** `Standard` Creates a string type from a regular expression */
     public RegEx(regex: RegExp, options: CustomOptions = {}): TString {
